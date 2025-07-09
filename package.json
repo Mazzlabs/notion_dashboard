@@ -1,0 +1,32 @@
+{
+  "name": "cs-student-dashboard",
+  "version": "1.0.0",
+  "description": "Complete CS Student Dashboard Notion Template - Academic & Career Management System",
+  "main": "create-cs-dashboard.js",
+  "scripts": {
+    "setup": "node create-cs-dashboard.js",
+    "validate": "node validate-setup.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "notion",
+    "template",
+    "computer-science",
+    "student",
+    "academic-management",
+    "career-development",
+    "portfolio-tracking",
+    "study-management"
+  ],
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "axios": "^1.5.0"
+  },
+  "author": "CS Student Dashboard Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cs-student-dashboard"
+  }
+}
