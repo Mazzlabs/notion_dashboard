@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Academic Management Dashboard{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS with Icons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Alpine.js for reactivity -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://unpkg.com/chart.js"></script>
+    
+    <!-- Configure Tailwind with custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        granite: {
+                            900: '#1a1a1a',
+                            800: '#2d2d2d',
+                            700: '#404040',
+                            600: '#525252',
+                            500: '#737373',
+                            400: '#a3a3a3',
+                            300: '#d4d4d4',
+                            200: '#e5e5e5',
+                            100: '#f5f5f5',
+                            50: '#fafafa'
+                        },
+                        turquoise: {
+                            900: '#0d4f4f',
+                            800: '#0f5e5e',
+                            700: '#0d7377',
+                            600: '#14a085',
+                            500: '#20b2aa',
+                            400: '#48cccd',
+                            300: '#7dd3d3',
+                            200: '#b2ebeb',
+                            100: '#e6f7f7',
+                            50: '#f0fbfb'
+                        },
+                        cream: {
+                            900: '#8b7355',
+                            800: '#a0845c',
+                            700: '#b59563',
+                            600: '#d4af37',
+                            500: '#f5deb3',
+                            400: '#f7e7c7',
+                            300: '#faf0db',
+                            200: '#fcf8ef',
+                            100: '#fefcf7',
+                            50: '#fffefb'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-cream-50 text-granite-800 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-granite-900 shadow-lg sticky top-0 z-50" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-turquoise-400">
+                            <span class="icon-academic"></span>
+                            Academic Hub
+                        </span>
+                    </div>
+                    
+                    <!-- Desktop Navigation -->
+                    <div class="hidden md:ml-10 md:flex md:space-x-1">
+                        <a href="{{ url_for('dashboard') }}" 
+                           class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                            <span class="icon-dashboard"></span>
+                            Dashboard
+                        </a>
+                        <a href="{{ url_for('assignments') }}" 
+                           class="nav-link {% if request.endpoint == 'assignments' %}active{% endif %}">
+                            <span class="icon-assignment"></span>
+                            Assignments
+                        </a>
+                        <a href="{{ url_for('skills') }}" 
+                           class="nav-link {% if request.endpoint == 'skills' %}active{% endif %}">
+                            <span class="icon-skill"></span>
+                            Skills
+                        </a>
+                        <a href="{{ url_for('goals') }}" 
+                           class="nav-link {% if request.endpoint == 'goals' %}active{% endif %}">
+                            <span class="icon-goal"></span>
+                            Goals
+                        </a>
+                        <a href="{{ url_for('portfolio') }}" 
+                           class="nav-link {% if request.endpoint == 'portfolio' %}active{% endif %}">
+                            <span class="icon-portfolio"></span>
+                            Portfolio
+                        </a>
+                        <a href="{{ url_for('calendar') }}" 
+                           class="nav-link {% if request.endpoint == 'calendar' %}active{% endif %}">
+                            <span class="icon-calendar"></span>
+                            Calendar
+                        </a>
+                        <a href="{{ url_for('analytics') }}" 
+                           class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}">
+                            <span class="icon-analytics"></span>
+                            Analytics
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- User Menu & Mobile Toggle -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <button class="text-granite-300 hover:text-turquoise-400 transition-colors p-2">
+                        <span class="icon-notification"></span>
+                    </button>
+                    
+                    <!-- Settings -->
+                    <button class="text-granite-300 hover:text-turquoise-400 transition-colors p-2">
+                        <span class="icon-settings"></span>
+                    </button>
+                    
+                    <!-- Mobile menu button -->
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                            class="md:hidden text-granite-300 hover:text-turquoise-400 p-2">
+                        <span class="icon-menu"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-granite-800">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{{ url_for('dashboard') }}" class="mobile-nav-link">
+                    <span class="icon-dashboard"></span>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('assignments') }}" class="mobile-nav-link">
+                    <span class="icon-assignment"></span>
+                    Assignments
+                </a>
+                <a href="{{ url_for('skills') }}" class="mobile-nav-link">
+                    <span class="icon-skill"></span>
+                    Skills
+                </a>
+                <a href="{{ url_for('goals') }}" class="mobile-nav-link">
+                    <span class="icon-goal"></span>
+                    Goals
+                </a>
+                <a href="{{ url_for('portfolio') }}" class="mobile-nav-link">
+                    <span class="icon-portfolio"></span>
+                    Portfolio
+                </a>
+                <a href="{{ url_for('calendar') }}" class="mobile-nav-link">
+                    <span class="icon-calendar"></span>
+                    Calendar
+                </a>
+                <a href="{{ url_for('analytics') }}" class="mobile-nav-link">
+                    <span class="icon-analytics"></span>
+                    Analytics
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-granite-800 text-granite-300 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-turquoise-400 mb-4">Academic Hub</h3>
+                    <p class="text-sm">
+                        A comprehensive academic management system designed to help students 
+                        track coursework, develop skills, and achieve their goals.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-turquoise-400 mb-4">Quick Links</h3>
+                    <div class="space-y-2 text-sm">
+                        <a href="{{ url_for('dashboard') }}" class="block hover:text-turquoise-400 transition-colors">Dashboard</a>
+                        <a href="{{ url_for('assignments') }}" class="block hover:text-turquoise-400 transition-colors">Assignments</a>
+                        <a href="{{ url_for('skills') }}" class="block hover:text-turquoise-400 transition-colors">Skills</a>
+                        <a href="{{ url_for('goals') }}" class="block hover:text-turquoise-400 transition-colors">Goals</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-turquoise-400 mb-4">Resources</h3>
+                    <div class="space-y-2 text-sm">
+                        <a href="#" class="block hover:text-turquoise-400 transition-colors">Help & Support</a>
+                        <a href="#" class="block hover:text-turquoise-400 transition-colors">Documentation</a>
+                        <a href="#" class="block hover:text-turquoise-400 transition-colors">Keyboard Shortcuts</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-granite-700 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2025 Academic Hub. Built with Flask, Tailwind CSS, and Notion API.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Global JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
