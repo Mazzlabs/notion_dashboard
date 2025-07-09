@@ -68,6 +68,13 @@ A comprehensive Notion template for Computer Science students to manage their en
 
 ## 1️⃣ Phase 1: Template Setup
 
+> Note: This step runs a CLI script that calls the Notion API. You do not host a server for Phase 1—just run the script locally and check your Notion workspace for the new dashboard page.
+
+In your terminal, navigate to the project root (where `package.json` and `create-cs-dashboard.js` live), for example:
+ ```bash
+ cd ~/Documents/RCC/notion
+ ```
+
 ```bash
 # Install dependencies
 npm install
@@ -109,3 +116,23 @@ npm install
 # Start the link-preview server
 npm start
 ```
+
+## 🚢 Deployment
+
+### Local Testing with Ngrok
+- Run the server locally: `npm start` (default port 3001).
+- Expose via ngrok: `ngrok http 3001`.
+- Update your Notion integration settings and OAuth redirect URI to point at `https://<YOUR_NGROK_SUBDOMAIN>.ngrok.io/notion/token`.
+
+### Production Deployment
+Deploy your link-preview server to a public host so Notion can reach your endpoints:
+
+**Heroku**:
+- Create a Heroku app: `heroku create your-app-name`
+- Add a Procfile with `web: node server.js`.
+- Set env vars: `heroku config:set GITHUB_CLIENT_ID=... GITHUB_CLIENT_SECRET=... NOTION_TOKEN=...`
+- Push and deploy: `git push heroku main`.
+- Update Notion integration callback URLs to `https://your-app-name.herokuapp.com/notion/token` and `/unfurl` endpoints.
+
+**Vercel / Netlify / AWS**:
+- Follow their docs to deploy a Node.js API service, set your environment variables, and point Notion’s OAuth redirect and unfurl URLs to the live domain.

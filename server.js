@@ -3,12 +3,15 @@ const express = require('express');
 const axios = require('axios');
 const querystring = require('querystring');
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 app.use(express.json());
+// Root endpoint for quick status check
+app.get('/', (req, res) => {
+  res.send('CS Student Dashboard Link-Preview API is running on port ' + port);
+});
 
 // Initiate OAuth 2.0 flow for GitHub
-toLowerCase
 app.get('/notion/authorize', (req, res) => {
   const params = {
     client_id: process.env.GITHUB_CLIENT_ID,

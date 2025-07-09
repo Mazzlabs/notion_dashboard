@@ -9,6 +9,7 @@
 const { Client } = require('@notionhq/client');
 require('dotenv').config();
 
+// This async function wraps the entire script logic
 async function main() {
   const token = process.env.NOTION_TOKEN;
   const parentPageId = process.env.NOTION_PARENT_PAGE_ID;
@@ -50,6 +51,7 @@ async function main() {
 
   // 2. Create databases
   const ids = {};
+  
   ids.courses = await createDB('📚 Courses', {
     'Course Name': { title: {} },
     'Code': { rich_text: {} },
@@ -62,14 +64,19 @@ async function main() {
 
   ids.assignments = await createDB('📝 Assignments', {
     'Assignment': { title: {} },
-    'Course': { relation: { database_id: ids.courses } },
+    'Course': { 
+      relation: { 
+        database_id: ids.courses,
+        single_property: {}
+      } 
+    },
     'Due Date': { date: {} },
     'Type': { select: { options: [ { name: 'Homework', color: 'blue' }, { name: 'Project', color: 'purple' } ] } },
     'Status': { select: { options: [ { name: 'Not Started', color: 'default' }, { name: 'In Progress', color: 'yellow' }, { name: 'Completed', color: 'green' } ] } },
     'Priority': { select: { options: [ { name: 'Low', color: 'gray' }, { name: 'Medium', color: 'yellow' }, { name: 'High', color: 'red' } ] } },
     'Notes': { rich_text: {} }
   });
-
+  
   ids.sessions = await createDB('⏰ Study Sessions', {
     'Session': { title: {} },
     'Date': { date: {} },
@@ -138,23 +145,11 @@ async function main() {
     'Progress': { number: { format: 'percent' } }
   });
 
-  // 3. Append child_database views to dashboard
-  const viewBlocks = Object.entries(ids).map(([key, dbId]) => ({
-    object: 'block', type: 'child_database', child_database: { database_id: dbId }
-  }));
-
-  await notion.blocks.children.append({
-    block_id: dashboardId,
-    children: [
-      { object: 'block', type: 'divider', divider: {} },
-      ...viewBlocks
-    ]
-  });
-
-  console.log('✅ All databases created and linked in dashboard!');
+  console.log('✅ All databases created!');
   console.log(`🔗 Dashboard URL: https://notion.so/${dashboardId.replace(/-/g,'')}`);
 }
 
+// This calls the main function and catches any errors
 main().catch(err => {
   console.error('❌ Error creating dashboard:', err);
   process.exit(1);
