@@ -131,6 +131,18 @@ async function main() {
     'Category': { select: { options: [ { name: 'Tutorial', color: 'purple' }, { name: 'Documentation', color: 'blue' } ] } }
   });
 
+  ids.designPatterns = await createDB('📐 Design Patterns', {
+    'Pattern': { title: {} },
+    'Type': { select: { options: [
+      { name: 'Creational', color: 'purple' },
+      { name: 'Structural', color: 'orange' },
+      { name: 'Behavioral', color: 'green' }
+    ] } },
+    'Resources': { relation: { database_id: ids.resources } },
+    'Use Cases': { rich_text: {} },
+    'Notes': { rich_text: {} }
+  });
+
   ids.goals = await createDB('🎓 Goals', {
     'Goal': { title: {} },
     'Category': { select: { options: [ { name: 'Academic', color: 'blue' }, { name: 'Career', color: 'green' } ] } },

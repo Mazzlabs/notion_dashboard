@@ -65,6 +65,7 @@ A comprehensive Notion template for Computer Science students to manage their en
 10. **🚀 Projects Database** - Portfolio management with completion focus
 11. **📖 Resources Database** - Learning materials and documentation
 12. **🎓 Goals Database** - Academic and career objectives
+13. **📐 Design Patterns Database** - Catalog of software design patterns
 
 ## 1️⃣ Phase 1: Template Setup
 
@@ -109,3 +110,26 @@ npm install
 # Start the link-preview server
 npm start
 ```
+
+**Example Usage**
+```bash
+# Preview a GitHub repository
+curl -X POST http://localhost:3001/unfurl \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://github.com/nodejs/node"}'
+
+# Retrieve curated design patterns
+curl http://localhost:3001/design-patterns
+```
+
+## 3️⃣ Phase 3: Docker Compose Setup
+
+Run the dashboard creation script and the link-preview server in containers:
+
+```bash
+docker-compose up --build
+```
+
+The `dashboard` service runs `create-cs-dashboard.js` once to build your Notion
+workspace, while the `server` service exposes `http://localhost:3001` for link
+previews and the `/design-patterns` API.

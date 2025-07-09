@@ -8,7 +8,6 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 
 // Initiate OAuth 2.0 flow for GitHub
-toLowerCase
 app.get('/notion/authorize', (req, res) => {
   const params = {
     client_id: process.env.GITHUB_CLIENT_ID,
@@ -89,6 +88,32 @@ app.post('/unfurl', async (req, res) => {
     console.error('Unfurl error:', error.response?.data || error.message);
     res.status(500).json({ error: 'Unfurl processing failed' });
   }
+});
+
+// Return a curated list of software design patterns
+const patternData = [
+  {
+    pattern: 'Singleton',
+    type: 'Creational',
+    resource: 'https://refactoring.guru/design-patterns/singleton',
+    useCase: 'Ensure a class has only one instance.'
+  },
+  {
+    pattern: 'Observer',
+    type: 'Behavioral',
+    resource: 'https://refactoring.guru/design-patterns/observer',
+    useCase: 'Notify dependent objects when state changes.'
+  },
+  {
+    pattern: 'Factory Method',
+    type: 'Creational',
+    resource: 'https://refactoring.guru/design-patterns/factory-method',
+    useCase: 'Create objects without specifying the exact class.'
+  }
+];
+
+app.get('/design-patterns', (req, res) => {
+  res.json(patternData);
 });
 
 app.listen(port, () => {

@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  dashboard:
+    build: .
+    command: node create-cs-dashboard.js
+    env_file: .env
+  server:
+    build: .
+    command: npm start
+    env_file: .env
+    ports:
+      - "3001:3001"
