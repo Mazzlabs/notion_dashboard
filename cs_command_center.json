@@ -1,0 +1,303 @@
+{
+  "template": {
+    "pages": [
+      {
+        "id": "dashboard",
+        "title": "CS Command Center",
+        "layout": [
+          {
+            "type": "heading",
+            "text": "Welcome to the CS Command Center"
+          },
+          {
+            "type": "paragraph",
+            "text": "Central hub for coursework, study sessions, skills, resources, and interview preparation."
+          },
+          {
+            "type": "callout",
+            "text": "Customize this dashboard by adding widgets like your calendar or task list."
+          },
+          {
+            "type": "subpage",
+            "title": "Coursework & Assignments",
+            "id": "coursework"
+          },
+          {
+            "type": "subpage",
+            "title": "Study Scheduling",
+            "id": "study"
+          },
+          {
+            "type": "subpage",
+            "title": "Practical Skills",
+            "id": "skills"
+          },
+          {
+            "type": "subpage",
+            "title": "Interview Prep",
+            "id": "interview"
+          },
+          {
+            "type": "subpage",
+            "title": "Resource Library",
+            "id": "resources"
+          }
+        ]
+      },
+      {
+        "id": "coursework",
+        "title": "Coursework & Assignments",
+        "layout": [
+          {
+            "type": "callout",
+            "text": "Track courses and related assignments. Use the Calendar view to see upcoming due dates."
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_courses",
+            "view": "Board",
+            "group_by": "Status"
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_assignments",
+            "view": "Calendar",
+            "sort": [ { "property": "Due Date", "direction": "ascending" } ]
+          }
+        ]
+      },
+      {
+        "id": "study",
+        "title": "Study Scheduling",
+        "layout": [
+          {
+            "type": "callout",
+            "text": "Log study sessions and embed your favorite Pomodoro timer below."
+          },
+          {
+            "type": "embed",
+            "url": "https://pomofocus.io"
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_study_sessions",
+            "view": "Table",
+            "sort": [ { "property": "Date", "direction": "descending" } ]
+          }
+        ]
+      },
+      {
+        "id": "skills",
+        "title": "Practical Skills",
+        "layout": [
+          {
+            "type": "callout",
+            "text": "Map out skills to practice and link helpful resources."
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_skills",
+            "view": "Table",
+            "sort": [ { "property": "Level", "direction": "ascending" } ]
+          }
+        ]
+      },
+      {
+        "id": "interview",
+        "title": "Interview Prep",
+        "layout": [
+          {
+            "type": "callout",
+            "text": "Store questions and schedule reviews. Use filters to focus on unanswered ones."
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_interview_prep",
+            "view": "List",
+            "filter": [ { "property": "Status", "value": "Unanswered" } ]
+          }
+        ]
+      },
+      {
+        "id": "resources",
+        "title": "Resource Library",
+        "layout": [
+          {
+            "type": "callout",
+            "text": "A collection of tutorials, documentation, and tools. Filter by category to find what you need."
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_resources",
+            "view": "Gallery",
+            "filter": [ { "property": "Status", "value": "To Explore" } ]
+          },
+          {
+            "type": "database_view",
+            "database_id": "db_resources",
+            "view": "List"
+          }
+        ]
+      }
+    ],
+    "databases": [
+      {
+        "id": "db_courses",
+        "title": "Courses",
+        "schema": {
+          "Course Name": { "type": "title" },
+          "Code": { "type": "text" },
+          "Credits": { "type": "number" },
+          "Semester": { "type": "select", "options": ["Fall", "Spring", "Summer"] },
+          "Status": { "type": "select", "options": ["Planned", "Enrolled", "Completed"] },
+          "Assignments": { "type": "relation", "database_id": "db_assignments" },
+          "Grade %": { "type": "rollup", "relation": "Assignments", "property": "Weighted %", "aggregation": "sum" },
+          "Grade Goal": { "type": "number" },
+          "Weighted Grade": { "type": "formula", "expression": "prop('Grade %')" }
+        },
+        "sample": [
+          {
+            "Course Name": "Intro to Programming",
+            "Code": "CS101",
+            "Credits": 3,
+            "Semester": "Fall",
+            "Status": "Enrolled",
+            "Grade Goal": 90
+          }
+        ]
+      },
+      {
+        "id": "db_assignments",
+        "title": "Assignments",
+        "schema": {
+          "Assignment": { "type": "title" },
+          "Course": { "type": "relation", "database_id": "db_courses" },
+          "Due Date": { "type": "date" },
+          "Type": { "type": "select", "options": ["Homework", "Project", "Exam"] },
+          "Status": { "type": "select", "options": ["Not Started", "In Progress", "Submitted", "Graded"] },
+          "Score": { "type": "number" },
+          "Max Score": { "type": "number" },
+          "Contribution %": { "type": "number" },
+          "Weighted %": { "type": "formula", "expression": "prop('Score') / prop('Max Score') * prop('Contribution %')" }
+        },
+        "sample": [
+          {
+            "Assignment": "HW1 Variables",
+            "Course": "Intro to Programming",
+            "Due Date": "2024-09-10",
+            "Type": "Homework",
+            "Status": "Submitted",
+            "Score": 95,
+            "Max Score": 100,
+            "Contribution %": 5
+          },
+          {
+            "Assignment": "Project 1",
+            "Course": "Intro to Programming",
+            "Due Date": "2024-10-01",
+            "Type": "Project",
+            "Status": "Not Started",
+            "Contribution %": 20
+          }
+        ]
+      },
+      {
+        "id": "db_study_sessions",
+        "title": "Study Sessions",
+        "schema": {
+          "Session": { "type": "title" },
+          "Date": { "type": "date" },
+          "Duration (min)": { "type": "number" },
+          "Assignment": { "type": "relation", "database_id": "db_assignments" },
+          "Technique": { "type": "select", "options": ["Pomodoro", "Deep Work", "Review"] },
+          "Notes": { "type": "text" }
+        },
+        "sample": [
+          {
+            "Session": "Morning Study",
+            "Date": "2024-09-05",
+            "Duration (min)": 60,
+            "Assignment": "HW1 Variables",
+            "Technique": "Pomodoro"
+          }
+        ]
+      },
+      {
+        "id": "db_skills",
+        "title": "Skills",
+        "schema": {
+          "Skill": { "type": "title" },
+          "Category": { "type": "select", "options": ["Frontend", "Backend", "Algorithms", "Tools"] },
+          "Level": { "type": "select", "options": ["Beginner", "Intermediate", "Advanced"] },
+          "Resources": { "type": "relation", "database_id": "db_resources" },
+          "Progress": { "type": "number" }
+        },
+        "sample": [
+          {
+            "Skill": "JavaScript",
+            "Category": "Frontend",
+            "Level": "Intermediate",
+            "Progress": 70
+          }
+        ]
+      },
+      {
+        "id": "db_interview_prep",
+        "title": "Interview Prep",
+        "schema": {
+          "Question": { "type": "title" },
+          "Category": { "type": "select", "options": ["Technical", "Behavioral"] },
+          "Difficulty": { "type": "select", "options": ["Easy", "Medium", "Hard"] },
+          "Status": { "type": "select", "options": ["Unanswered", "Reviewing", "Mastered"] },
+          "Skill": { "type": "relation", "database_id": "db_skills" },
+          "Last Reviewed": { "type": "date" },
+          "Notes": { "type": "text" }
+        },
+        "sample": [
+          {
+            "Question": "Explain closures in JavaScript",
+            "Category": "Technical",
+            "Difficulty": "Medium",
+            "Status": "Reviewing",
+            "Skill": "JavaScript"
+          }
+        ]
+      },
+      {
+        "id": "db_resources",
+        "title": "Resources",
+        "schema": {
+          "Title": { "type": "title" },
+          "URL": { "type": "url" },
+          "Category": { "type": "select", "options": ["Tutorial", "Documentation", "Course", "Tool"] },
+          "Type": { "type": "select", "options": ["Video", "Article", "Interactive", "Reference"] },
+          "Status": { "type": "select", "options": ["To Explore", "In Progress", "Useful", "Completed"] },
+          "Skills": { "type": "relation", "database_id": "db_skills" }
+        },
+        "sample": [
+          {
+            "Title": "Scrimba JavaScript Course",
+            "URL": "https://scrimba.com/learn/javascript",
+            "Category": "Course",
+            "Type": "Interactive",
+            "Status": "In Progress"
+          },
+          {
+            "Title": "Educative Grokking Algorithms",
+            "URL": "https://www.educative.io/courses/grokking-the-coding-interview",
+            "Category": "Course",
+            "Type": "Interactive",
+            "Status": "To Explore"
+          },
+          {
+            "Title": "JetBrains Docs",
+            "URL": "https://www.jetbrains.com/help/",
+            "Category": "Documentation",
+            "Type": "Reference",
+            "Status": "Useful"
+          }
+        ]
+      }
+    ]
+  }
+}
